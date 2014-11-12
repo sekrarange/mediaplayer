@@ -62,18 +62,16 @@ router.post('/api/login', function(req, res) {
   console.log("some login data just arrived:", req.body);
   if(undefined !== (req.body.password) &&  undefined !== req.body.username) {
     // TODO get personal playlist from database
-	var kayttaja = connection.query('SELECT id FROM kayttaja WHERE tunnus = "'+ req.body.username +'" AND salasana = "' + req.body.password + '";', function(err, rows, fields) {
+
+	connection.query('SELECT * FROM kappale INNER JOIN soittolista ON id = soittolista.kappaleid AND soittolista.kayttajaid = (SELECT id FROM kayttaja WHERE tunnus = "'+ req.body.username +'" AND salasana = "' + req.body.password + '");', function(err, rows, fields) {
 		if (err) {
 			console.log(err);
 			throw err;
 		}
-	}
-	connection.query('SELECT * FROM kappale INNER JOIN soittolista ON id = soittolista.kappaleid AND soittolista.kayttajaid = "'+ kayttaja +'";', function(err, rows, fields) {
-		if (err) {
-			console.log(err);
-			throw err;
-		}	
+	
     res.json({login: 'ok', playlist: rows});
+	
+	});
   }
   else {
     res.json({login: 'failed'});

@@ -6,7 +6,7 @@
 
         <link rel="stylesheet" href="public/style.css">
 
-        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha1.js"></script> <!-- for SHA1 -->
         <script src="public/mediaplayer.js"></script>
 
@@ -60,7 +60,6 @@
                 $("#btnLogin").click(function(){
                     var username = document.getElementById('username').value;
                     var password = CryptoJS.SHA1(document.getElementById('password').value).toString();
-
                     $.post("api/login",
                             {username: username,
                             password: password},
@@ -74,11 +73,11 @@
                                 }
                                 // Use JSON.stringify(data) if you need to convert JS object to a string
                                 console.log("Data: " + JSON.stringify(data) + "\nStatus: " + status);
-                                var playlist = data.playlist;
+                                
                                 for(var song in playlist) {
-                                    console.log("Adding song:", playlist[song].title + " by " + playlist[song].artist);
+                                    console.log("Adding song:", playlist[song].nimi + " by " + playlist[song].artisti);
                                 }
-								myPlayer = new Mediaplayer(playlist);
+                                myPlayer = new Mediaplayer(playlist);
                             }, "json");
                     });
                 };

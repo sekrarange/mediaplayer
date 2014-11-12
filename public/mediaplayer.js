@@ -1,6 +1,6 @@
 /* Create mediaplayer object */
 
-var Mediaplayer = function() {
+var Mediaplayer = function(playlist) {
 
 	var player = document.getElementById('player');
 
