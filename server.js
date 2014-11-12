@@ -13,6 +13,17 @@ var express    = require('express');        // call express
 var app        = express();                 // define our app using express
 var bodyParser = require('body-parser');
 
+
+var mysql      = require('mysql');
+var conn		 = "";
+if (process.env.OPENSHIFT_MYSQL_DB_HOST == undefined)
+	conn = 'mysql://root:@localhost/mediaplayer';
+else
+	conn = ('mysql://mediaplayer@') + process.env.OPENSHIFT_MYSQL_DB_HOST + ':' + process.env.OPENSHIFT_MYSQL_DB_PORT + '/mediaplayer';
+var connection = mysql.createConnection(conn);
+
+connection.connect();
+  
 // configure app to use bodyParser()
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -33,11 +44,6 @@ router.get('/', function(req, res) {
 
 router.get('/api', function(req, res) {
     //res.json({ message: 'hooray! welcome to our api!' });
-  var mysql      = require('mysql');
-  var conn 		   = (process.env.OPENSHIFT_MYSQL_DB_URL || 'mysql://root:test1234@localhost/') + 'mediaplayer';
-  var connection = mysql.createConnection(conn);
-
-  connection.connect();
 
   connection.query('SHOW TABLES', function(err, rows, fields) {
     console.log("rows:", rows);
@@ -45,13 +51,7 @@ router.get('/api', function(req, res) {
       console.log(err);
       throw err;
     }
-    var dbresp = "";
-    for(var solution in rows) {
-      //console.log('Table', solution + ': ', rows[solution].Tables_in_mediaplayer);
-      //res.json({ message: 'hooray! welcome to our api!' });
-      dbresp += 'Tables: ' + rows[solution].Tables_in_mediaplayer + ' | ';
-    }
-    res.json({ message: dbresp });
+    res.json({playlist: rows});
   });
 
   connection.end();
@@ -62,7 +62,18 @@ router.post('/api/login', function(req, res) {
   console.log("some login data just arrived:", req.body);
   if(undefined !== (req.body.password) &&  undefined !== req.body.username) {
     // TODO get personal playlist from database
-    res.json({login: 'ok', playlist: [{title: "Kesämopo", artist: "Sleepy Sleepers"}, {title: "Africa", artist: "Toto"}]});
+	var kayttaja = connection.query('SELECT id FROM kayttaja WHERE tunnus = "'+ req.body.username +'" AND salasana = "' + req.body.password + '";', function(err, rows, fields) {
+		if (err) {
+			console.log(err);
+			throw err;
+		}
+	}
+	connection.query('SELECT * FROM kappale INNER JOIN soittolista ON id = soittolista.kappaleid AND soittolista.kayttajaid = "'+ kayttaja +'";', function(err, rows, fields) {
+		if (err) {
+			console.log(err);
+			throw err;
+		}	
+    res.json({login: 'ok', playlist: rows});
   }
   else {
     res.json({login: 'failed'});

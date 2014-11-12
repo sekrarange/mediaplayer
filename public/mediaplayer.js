@@ -4,15 +4,6 @@ var Mediaplayer = function() {
 
 	var player = document.getElementById('player');
 
-	var playlist = ["http://opengameart.org/sites/default/files/Soliloquy_1.mp3",
-					"http://opengameart.org/sites/default/files/Arabesque.mp3",
-					"http://opengameart.org/sites/default/files/Gran%20Batalla.mp3",
-					"http://opengameart.org/sites/default/files/Carnegieo.ogg",
-					"http://opengameart.org/sites/default/files/Sigil_3.ogg",
-					"http://opengameart.org/sites/default/files/sadorchestralbgm%28syncopika%29.wav",
-					"http://opengameart.org/sites/default/files/catinspace_hq.mp3",
-					"public/media/Soliloquy_1.mp3"];
-
 	initMediaplayer();
 /*
 	// Create timer to show mediaplayer UI
@@ -50,9 +41,9 @@ var Mediaplayer = function() {
 		var songs = '<table><tr><th>#</th><th>Song</th><th>Duration</th></tr>'
 		for(var song in playlist) {
 			var audio = new Audio();
-			audio.src = playlist[song];
+			audio.src = playlist[song].linkki;
 			audio.songId = song;
-			songs += '<tr class="selectable"><td><b>' + song + '</b></td><td onclick="myPlayer.selectSong(\'' + song + '\')"">' + playlist[song] + '</td><td id="song' + song + '"></td></tr>'; 
+			songs += '<tr class="selectable"><td><b>' + song + '</b></td><td onclick="myPlayer.selectSong(\'' + song+ '\')"">' + playlist[song].artisti + " - " + playlist[song].nimi + '</td><td id="song' + song + '"></td></tr>';
 			audio.addEventListener('loadedmetadata', function() {
 				// Say something about the EventListener scope
 				var duration = this.duration;

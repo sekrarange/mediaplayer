@@ -47,7 +47,13 @@
                 myPlayer = new Mediaplayer();
 
                 var jqxhr = $.get( "api/", function(data) {
-                    // TODO: show initial playlist
+                    // show initial playlist
+					var playlist = data.playlist;
+                    for(var song in playlist){
+						console.log("Adding song:", playlist[song].nimi + " by " + playlist[song].artisti);
+                    }
+                                    
+                    myPlayer = new Mediaplayer(playlist);
                 });
 
                 /* Login submit function */
@@ -59,8 +65,10 @@
                             {username: username,
                             password: password},
                             function(data,status, jqXHR){
-                                // TODO: show personal playlist after successful login
+                                // show personal playlist after successful login
+                                window.alert("login: "+data.login);
                                 var login  = data.login;
+                                playlist = data.playlist;
                                 if(login == 'ok') {
                                     console.log("login ok")
                                 }
@@ -70,6 +78,7 @@
                                 for(var song in playlist) {
                                     console.log("Adding song:", playlist[song].title + " by " + playlist[song].artist);
                                 }
+								myPlayer = new Mediaplayer(playlist);
                             }, "json");
                     });
                 };
