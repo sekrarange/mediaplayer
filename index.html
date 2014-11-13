@@ -43,8 +43,6 @@
             console.log("hash", hash.toString());
 
             window.onload = function() {
-                // Create mediaplayer object
-                myPlayer = new Mediaplayer();
 
                 var jqxhr = $.get( "api/", function(data) {
                     // show initial playlist
@@ -60,7 +58,7 @@
                 $("#btnLogin").click(function(){
                     var username = document.getElementById('username').value;
                     var password = CryptoJS.SHA1(document.getElementById('password').value).toString();
-                    $.post("api/login",
+                    $.post("api/login/",
                             {username: username,
                             password: password},
                             function(data,status, jqXHR){

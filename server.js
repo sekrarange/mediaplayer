@@ -16,10 +16,10 @@ var bodyParser = require('body-parser');
 
 var mysql      = require('mysql');
 var conn		 = "";
-if (process.env.OPENSHIFT_MYSQL_DB_HOST == undefined)
-	conn = 'mysql://root:@localhost/mediaplayer';
-else
-	conn = ('mysql://mediaplayer@') + process.env.OPENSHIFT_MYSQL_DB_HOST + ':' + process.env.OPENSHIFT_MYSQL_DB_PORT + '/mediaplayer';
+//if (process.env.OPENSHIFT_MYSQL_DB_HOST == undefined)
+//	conn = 'mysql://root:@localhost/mediaplayer';
+//else
+	conn = 'mysql://mediaplayer@' + process.env.OPENSHIFT_MYSQL_DB_HOST + ':' + process.env.OPENSHIFT_MYSQL_DB_PORT + '/mediaplayer';
 var connection = mysql.createConnection(conn);
 
 connection.connect();
@@ -45,16 +45,21 @@ router.get('/', function(req, res) {
 router.get('/api', function(req, res) {
     //res.json({ message: 'hooray! welcome to our api!' });
 
-  connection.query('SHOW TABLES', function(err, rows, fields) {
+  connection.query('SELECT * FROM kappale;', function(err, rows, fields) {
     console.log("rows:", rows);
     if (err) {
       console.log(err);
       throw err;
     }
-    res.json({playlist: rows});
+    //var dbresp = "";
+   // for(var solution in rows) {
+      //console.log('Table', solution + ': ', rows[solution].Tables_in_mediaplayer);
+      //res.json({ message: 'hooray! welcome to our api!' });
+  //    dbresp += 'Songs: ' + rows[solution].Tables_in_mediaplayer + ' | ';
+   // }
+    res.json({ playlist: rows});
   });
 
-  connection.end();
 });
 
 /* Handle login POST request */
@@ -63,7 +68,7 @@ router.post('/api/login', function(req, res) {
   if(undefined !== (req.body.password) &&  undefined !== req.body.username) {
     // TODO get personal playlist from database
 
-	connection.query('SELECT * FROM kappale INNER JOIN soittolista ON id = soittolista.kappaleid AND soittolista.kayttajaid = (SELECT id FROM kayttaja WHERE tunnus = "'+ req.body.username +'" AND salasana = "' + req.body.password + '");', function(err, rows, fields) {
+	connection.query('SELECT * FROM kappale INNER JOIN soittolista ON id = soittolista.kappaleid AND soittolista.kayttajaid = (SELECT id FROM kayttaja WHERE tunnus = "'+ req.body.username +'" AND salasanatiiviste = "' + req.body.password + '");', function(err, rows, fields) {
 		if (err) {
 			console.log(err);
 			throw err;

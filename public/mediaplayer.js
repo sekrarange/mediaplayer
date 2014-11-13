@@ -80,7 +80,7 @@ var Mediaplayer = function(playlist) {
 
 	this.selectSong = function (songId) {
 		console.log("selected:", playlist[songId]);
-		player.src = playlist[songId];
+		player.src = playlist[songId].linkki;
 		player.play();
 	}
 
